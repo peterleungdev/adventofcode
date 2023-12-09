@@ -140,7 +140,7 @@ func PartTwo(filename string) (sum int) {
 }
 
 func main() {
-	const filename = "day_01_input"
+	const filename = "input"
 
 	partOne := PartOne(filename)
 	partTwo := PartTwo(filename)
