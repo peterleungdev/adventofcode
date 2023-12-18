@@ -11,6 +11,7 @@ import (
 type Game struct {
 	GameID   int
 	Sets     []Cubes
+	MaxCubes Cubes
 	Possible bool
 }
 
@@ -47,7 +48,7 @@ func IsPossibleSet(currentSet Cubes, maxCubes Cubes) (possible bool) {
 	return true
 }
 
-func PartOne(filename string, maxCubes Cubes) (ans int, err error) {
+func PartOneTwo(filename string, maxCubes Cubes) (sumOfPossibleGameID int, sumOfPower int, err error) {
 	fileBytes, err := os.ReadFile(filename)
 	if err != nil {
 		fmt.Printf("fail to open file %s\n", filename)
@@ -82,6 +83,7 @@ func PartOne(filename string, maxCubes Cubes) (ans int, err error) {
 		game := Game{
 			GameID:   id,
 			Sets:     []Cubes{},
+			MaxCubes: Cubes{},
 			Possible: true,
 		}
 		for _, set := range setsString {
@@ -116,18 +118,30 @@ func PartOne(filename string, maxCubes Cubes) (ans int, err error) {
 				if !possible {
 					game.Possible = false
 				}
+
+				if currentSet.red > game.MaxCubes.red {
+					game.MaxCubes.red = currentSet.red
+				}
+				if currentSet.green > game.MaxCubes.green {
+					game.MaxCubes.green = currentSet.green
+				}
+				if currentSet.blue > game.MaxCubes.blue {
+					game.MaxCubes.blue = currentSet.blue
+				}
 			}
 		}
 		if game.Possible == true {
-			ans += game.GameID
+			sumOfPossibleGameID += game.GameID
 		}
+		power := game.MaxCubes.red * game.MaxCubes.green * game.MaxCubes.blue
+		sumOfPower += power
 	}
 	return
 }
 
 func main() {
 
-	ans, err := PartOne("input", Cubes{
+	partOne, partTwo, err := PartOneTwo("input", Cubes{
 		red:   12,
 		green: 13,
 		blue:  14,
@@ -135,5 +149,6 @@ func main() {
 	if err != nil {
 		fmt.Println("Part one error: ", err)
 	}
-	fmt.Println("Part one answer:", ans)
+	fmt.Println("Part one answer:", partOne)
+	fmt.Println("Part two answer:", partTwo)
 }
