@@ -4,6 +4,7 @@ Copyright © 2024 Peter Leung
 package cmd
 
 import (
+	"aoc/cmd/year2023"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -14,9 +15,6 @@ var rootCmd = &cobra.Command{
 	Use:   "aoc",
 	Short: "Advent of Code",
 	Long:  `aoc is a command line utility to show the answers of the solutions to Advent of Code`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -29,5 +27,6 @@ func Execute() {
 }
 
 func init() {
+	rootCmd.AddCommand(year2023.Cmd)
 
 }

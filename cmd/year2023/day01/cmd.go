@@ -1,14 +1,37 @@
 // https://adventofcode.com/2023/day/1
 
-package main
+package day01
 
 import (
-	"bufio"
 	"fmt"
 	"os"
 	"strconv"
 	"strings"
+
+	"github.com/sirupsen/logrus"
+	"github.com/spf13/cobra"
 )
+
+var Cmd = &cobra.Command{
+	Use:   "day01",
+	Short: "day01",
+	Long:  `day01`,
+	Run: func(cmd *cobra.Command, args []string) {
+		execute(cmd.Parent().Name(), cmd.Name())
+	},
+}
+
+func execute(parent, command string) {
+	filename := fmt.Sprintf("cmd/year%s/%s/input.txt", parent, command)
+	b, err := os.ReadFile(filename)
+
+	if err != nil {
+		logrus.Fatal(err)
+	}
+
+	logrus.Infof("part 1: %d", PartOne(string(b)))
+	logrus.Infof("part 2: %d", PartTwo(string(b)))
+}
 
 func FindDigits(line string) (first, last, firstIndex, lastIndex int) {
 	first = -1
@@ -63,44 +86,29 @@ func FindDigitLetters(line string) (first, last, firstIndex, lastIndex int) {
 }
 
 // Find sum by number digit only
-func PartOne(filename string) (sum int) {
+func PartOne(s string) (ans int64) {
 
-	file, err := os.Open(filename)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	defer file.Close()
+	lines := strings.Split(s, "\n")
+	var sum int
 
-	scanner := bufio.NewScanner(file)
-	scanner.Split(bufio.ScanLines)
-
-	for scanner.Scan() {
-		line := scanner.Text()
+	for _, line := range lines {
+		if line == "" {
+			continue
+		}
 		first, last, _, _ := FindDigits(line)
 		sum += first*10 + last
 	}
 
-	return sum
+	return int64(sum)
 }
 
 // Find sum by number digit and letter digit
-func PartTwo(filename string) (sum int) {
+func PartTwo(s string) (ans int64) {
 
-	file, err := os.Open(filename)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	defer file.Close()
+	lines := strings.Split(s, "\n")
 
-	scanner := bufio.NewScanner(file)
-	scanner.Split(bufio.ScanLines)
-
-	lineCount := 0
-	for scanner.Scan() {
-		lineCount += 1
-		line := scanner.Text()
+	var sum int
+	for _, line := range lines {
 
 		firstDigit, lastDigit, firstDigitIndex, lastDigitIndex := FindDigits(line)
 		firstLetter, lastLetter, firstLetterIndex, lastLetterIndex := FindDigitLetters(line)
@@ -136,14 +144,5 @@ func PartTwo(filename string) (sum int) {
 		sum += first*10 + last
 	}
 
-	return sum
-}
-
-func main() {
-	const filename = "input"
-
-	partOne := PartOne(filename)
-	partTwo := PartTwo(filename)
-	fmt.Println(partOne)
-	fmt.Println(partTwo)
+	return int64(sum)
 }
