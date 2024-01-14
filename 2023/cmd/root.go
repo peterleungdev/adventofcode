@@ -6,6 +6,9 @@ package cmd
 import (
 	"aoc2023/cmd/day01"
 	"aoc2023/cmd/day02"
+	"aoc2023/cmd/day03"
+	"aoc2023/cmd/day04"
+
 	"os"
 
 	"github.com/spf13/cobra"
@@ -30,4 +33,7 @@ func Execute() {
 func init() {
 	rootCmd.AddCommand(day01.Cmd)
 	rootCmd.AddCommand(day02.Cmd)
+	rootCmd.AddCommand(day03.Cmd)
+	rootCmd.AddCommand(day04.Cmd)
+
 }

@@ -1,4 +1,4 @@
-package main
+package day04
 
 import (
 	"bufio"
@@ -7,6 +7,9 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+
+	"github.com/sirupsen/logrus"
+	"github.com/spf13/cobra"
 )
 
 type Card struct {
@@ -18,23 +21,34 @@ type Card struct {
 
 const filename string = "input"
 
-// solution of https://adventofcode.com/2023/day/3
-func main() {
-	lines, err := ParseFile(filename)
+var Cmd = &cobra.Command{
+	Use:   "day04",
+	Short: "day04",
+	Long:  `day04`,
+	Run: func(cmd *cobra.Command, args []string) {
+		execute(cmd.Parent().Name(), cmd.Name())
+	},
+}
+
+func execute(parent, command string) {
+	filename := fmt.Sprintf("cmd/%s/input.txt", command)
+	b, err := os.ReadFile(filename)
+
 	if err != nil {
-		return
+		logrus.Fatal(err)
 	}
 
+	lines := strings.Split(string(b), "\n")
 	cards, err := ParseData(lines)
 	if err != nil {
 		fmt.Println(err)
 	}
 
 	points := PartOne(cards)
-	fmt.Println("Part One:", points)
-
 	cardCount := PartTwo(cards)
-	fmt.Println("Part Two:", cardCount)
+
+	logrus.Infof("part 1: %d", points)
+	logrus.Infof("part 2: %d", cardCount)
 }
 
 func ParseFile(filename string) (lines []string, err error) {

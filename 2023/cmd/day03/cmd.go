@@ -1,10 +1,14 @@
-package main
+package day03
 
 import (
 	"bufio"
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
+
+	"github.com/sirupsen/logrus"
+	"github.com/spf13/cobra"
 )
 
 type Data struct {
@@ -16,20 +20,32 @@ type Coordinate struct {
 	charIndex int
 }
 
-const filename string = "input"
+var Cmd = &cobra.Command{
+	Use:   "day03",
+	Short: "day03",
+	Long:  `day03`,
+	Run: func(cmd *cobra.Command, args []string) {
+		execute(cmd.Parent().Name(), cmd.Name())
+	},
+}
 
-// solution of https://adventofcode.com/2023/day/3
-func main() {
-	lines, err := ParseFile(filename)
+func execute(parent, command string) {
+	filename := fmt.Sprintf("cmd/%s/input.txt", command)
+	b, err := os.ReadFile(filename)
+
 	if err != nil {
-		return
+		logrus.Fatal(err)
 	}
+
+	lines := strings.Split(string(b), "\n")
+
 	partOne, partTwo, err := PartOneTwo(lines)
 	if err != nil {
 		fmt.Println("Error - ", err)
 	}
-	fmt.Println("Part One:", partOne)
-	fmt.Println("Part Two:", partTwo)
+
+	logrus.Infof("part 1: %d", partOne)
+	logrus.Infof("part 2: %d", partTwo)
 }
 
 func PartOneTwo(lines []string) (sumOfPartNumber int, sumOfGearRatio int, err error) {
@@ -37,6 +53,9 @@ func PartOneTwo(lines []string) (sumOfPartNumber int, sumOfGearRatio int, err er
 	starMap := make(map[Coordinate][]int)
 
 	for lineIndex, line := range lines {
+		if len(line) == 0 {
+			continue
+		}
 		currentNumber := ""
 		readingNumber := false
 		startIndex := -1
