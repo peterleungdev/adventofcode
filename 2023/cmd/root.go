@@ -4,7 +4,8 @@ Copyright © 2024 Peter Leung
 package cmd
 
 import (
-	"aoc/cmd/year2023"
+	"aoc2023/cmd/day01"
+	"aoc2023/cmd/day02"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -12,9 +13,9 @@ import (
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "aoc",
-	Short: "Advent of Code",
-	Long:  `aoc is a command line utility to show the answers of the solutions to Advent of Code`,
+	Use:   "aoc2023",
+	Short: "Advent of Code 2023",
+	Long:  `aoc is a command line utility to show the answers of the solutions to Advent of Code 2023`,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -27,6 +28,6 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.AddCommand(year2023.Cmd)
-
+	rootCmd.AddCommand(day01.Cmd)
+	rootCmd.AddCommand(day02.Cmd)
 }
