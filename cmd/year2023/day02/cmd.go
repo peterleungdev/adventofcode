@@ -1,4 +1,4 @@
-package main
+package day02
 
 import (
 	"errors"
@@ -6,6 +6,9 @@ import (
 	"os"
 	"strconv"
 	"strings"
+
+	"github.com/sirupsen/logrus"
+	"github.com/spf13/cobra"
 )
 
 type Game struct {
@@ -19,6 +22,36 @@ type Cubes struct {
 	red   int
 	green int
 	blue  int
+}
+
+var Cmd = &cobra.Command{
+	Use:   "day02",
+	Short: "day02",
+	Long:  `day02`,
+	Run: func(cmd *cobra.Command, args []string) {
+		execute(cmd.Parent().Name(), cmd.Name())
+	},
+}
+
+func execute(parent, command string) {
+	filename := fmt.Sprintf("cmd/year%s/%s/input.txt", parent, command)
+	b, err := os.ReadFile(filename)
+
+	if err != nil {
+		logrus.Fatal(err)
+	}
+
+	partOne, partTwo, err := PartOneTwo(string(b), Cubes{
+		red:   12,
+		green: 13,
+		blue:  14,
+	})
+	if err != nil {
+		fmt.Println("Part one error: ", err)
+	}
+
+	logrus.Infof("part 1: %d", partOne)
+	logrus.Infof("part 2: %d", partTwo)
 }
 
 func ParseFile(filename string) (data []Game, err error) {
@@ -48,14 +81,9 @@ func IsPossibleSet(currentSet Cubes, maxCubes Cubes) (possible bool) {
 	return true
 }
 
-func PartOneTwo(filename string, maxCubes Cubes) (sumOfPossibleGameID int, sumOfPower int, err error) {
-	fileBytes, err := os.ReadFile(filename)
-	if err != nil {
-		fmt.Printf("fail to open file %s\n", filename)
-		return
-	}
-	str := string(fileBytes)
-	lines := strings.Split(str, "\n")
+func PartOneTwo(s string, maxCubes Cubes) (sumOfPossibleGameID int, sumOfPower int, err error) {
+
+	lines := strings.Split(s, "\n")
 
 	for _, line := range lines {
 		if line == "" {
@@ -137,18 +165,4 @@ func PartOneTwo(filename string, maxCubes Cubes) (sumOfPossibleGameID int, sumOf
 		sumOfPower += power
 	}
 	return
-}
-
-func main() {
-
-	partOne, partTwo, err := PartOneTwo("input", Cubes{
-		red:   12,
-		green: 13,
-		blue:  14,
-	})
-	if err != nil {
-		fmt.Println("Part one error: ", err)
-	}
-	fmt.Println("Part one answer:", partOne)
-	fmt.Println("Part two answer:", partTwo)
 }
